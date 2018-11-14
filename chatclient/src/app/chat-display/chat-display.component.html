@@ -1,0 +1,12 @@
+<div id="messageContainer">
+  <ul id="msg">
+    <li *ngFor="let msg of messages">
+      <div id="head">
+        <div id="timestamp"><strong>{{msg.timestamp}}</strong></div>
+        <div id="name"><strong>{{msg.user}}</strong></div>
+        <div id="mood">{{msg.mood}}</div>
+      </div>
+      <div id="message">{{msg.msg}}</div>
+    </li>
+  </ul>
+</div>
