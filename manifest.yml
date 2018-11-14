@@ -1,4 +1,4 @@
- applications:
- - name: chatmoodserver
-   memory: 256M
-   instances: 1
+---
+applications:
+- name: vibrant-mcclintock
+  memory: 128M
