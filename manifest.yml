@@ -1,0 +1,4 @@
+ applications:
+ - name: chatmoodserver
+   memory: 256M
+   instances: 1
