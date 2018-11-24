@@ -36,3 +36,11 @@
     font-size: 18px;
     clear: both;
 }
+
+#markedMessage {
+    font-family: "Verdana", Times, serif;
+    color: lightgrey;
+    font-size: 18px;
+    clear: both;
+    font-style: italic;
+}

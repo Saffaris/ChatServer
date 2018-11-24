@@ -1,18 +1,12 @@
-#loginContainer {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px;
-    padding-bottom: 10px;
-    width: 20%;
-    border: solid;
-    border-color: #D3D3D3;
-    border-width: 1px;
-    border-radius: 5px;
+.loginPart{
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-button{
-    margin-top:5px;
-    margin-bottom: 5px;
-    width: 100%;
+#loginContainer {
+    width: 400px;
+    margin: 0 auto;
+    align-content: center;
 }

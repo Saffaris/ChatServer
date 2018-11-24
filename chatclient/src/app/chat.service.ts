@@ -1,20 +1,23 @@
-import * as io from 'socket.io-client';
-import { Observable, Subject, pipe } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable} from 'rxjs';
+import { TestService } from './test.service'
 
+@Injectable()
 export class ChatService {
  // private url = 'http://localhost:3000';
+
   private socket;
 
-  constructor() {
-    this.socket = io();
+  constructor(private ts: TestService) {
+    this.socket = this.ts.getSocket();
   }
 
   /**
    * adds user to chat
-   * @param info (chat,user)
+   * @param room(chat,user)
    */
-  public join(info) {
-    this.socket.emit('join', info);
+  public join(room) {
+    this.socket.emit('join', room);
   }
 
   /**
@@ -22,15 +25,15 @@ export class ChatService {
    * @param chatroom 
    * @param message 
    */
-  public sendMessage(chatroom, message) {
-    this.socket.emit('message', {chat: chatroom, msg: message});
+  public sendMessage(message) {
+    this.socket.emit('message', message);
   }
 
   /**
    * requests list of all user from server
    */
   public getList() {
-    this.socket.emit('list');
+    this.socket.emit('listmsg');
   }
 
   /**
@@ -60,6 +63,14 @@ export class ChatService {
     return Observable.create((observer) => {
       this.socket.on('message', (message) => {
         observer.next(message);
+      });
+    });
+  }
+
+  public getListForComponent() {
+    return Observable.create((observer) => {
+      this.socket.on('list', (list) => {
+        observer.next(list);
       });
     });
   }

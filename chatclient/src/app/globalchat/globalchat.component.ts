@@ -10,19 +10,18 @@ import { MoodService } from '../mood.service';
   styleUrls: ['./globalchat.component.css']
 })
 export class GlobalchatComponent implements OnInit {
+  
 
   public displayMessages: Message[] = [];
   
   username: string = localStorage.getItem('username');
 
-  moodservice: MoodService;
-  chatservice: ChatService;
+  //moodservice: MoodService;
 
   chat: string= 'global';
 
-  constructor(private router: Router) {
-    this.chatservice = new ChatService();
-    this.moodservice = new MoodService();
+  constructor(private router: Router, private chatservice: ChatService) {
+    //this.moodservice = new MoodService();
   }
 
   /**
@@ -31,15 +30,13 @@ export class GlobalchatComponent implements OnInit {
    */
   ngOnInit() {
     if(this.username == null || this.username == undefined) {
-      this.backToLogin();
     }
-    this.chatservice.join({user: this.username, chat:this.chat});
+    this.chatservice.join(this.chat);
     this.chatservice.getMessages().subscribe((message) => {
-      var m = new Message(message.user, message.timestamp, message.msg);
-      this.moodservice.getMood(message.msg, m);
+      console.log(message.msg)
+      var m = new Message(message.user, message.timestamp, message.message);
       this.displayMessages.push(m);
-    })
-
+    });
   }
 
   sendMessage($event) {
@@ -57,7 +54,7 @@ export class GlobalchatComponent implements OnInit {
         this.chatservice.whisper(user, msg);
       }
     }else {
-      this.chatservice.sendMessage(this.chat, input);
+      this.chatservice.sendMessage(input);
     }
   }
  
@@ -69,10 +66,4 @@ export class GlobalchatComponent implements OnInit {
     var filename = event.target.value.split('\\')[event.target.value.split('\\').length - 1];
   }
 
-  /**
-   * routes user to login
-   */
-  backToLogin() {
-    this.router.navigate(['']);
-  }
 }

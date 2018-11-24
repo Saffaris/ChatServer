@@ -1,3 +1,12 @@
 <div id="container">
-  
+    <div id="header">
+        <h1>Online Users: {{list.length}}</h1>
+    </div>
+    <div id = "listcontainer">
+        <ul id="list">
+            <li *ngFor="let item of list">
+                <div id="user">{{item}}</div>
+            </li>
+        </ul>
+    </div>
 </div>

@@ -101,16 +101,6 @@ form input{
   width: 80%;
 }
 
-#chat{
-  margin-left: 10px;
-  margin-right: 10px;
-  width: 70%;
-  height: 80%;
-  border: solid;
-  border-width: 1px;
-  border-radius: 5px;
-  border-color: grey;
-}
 
 #chatform{
   height: 10%;
@@ -124,6 +114,36 @@ form input{
   display: flex;
   flex-direction: column-reverse;
   min-height: 0px;
+}
+
+.window{
+  border: 1px solid grey;
+  border-radius: 5px;
+  margin: 4px;
+  height: 100%;
+  float:left;
+}
+
+#main {
+  box-sizing: border-box;
+  width: 100%;
+  height: 80%;
+}
+
+#room{
+  width: 14%;
+  float: left;
+}
+
+#chat{
+  width: 70%;
+  float: left;
+}
+
+
+#list{
+  width: 14%;
+  float: left;
 }
 
  /* width */
