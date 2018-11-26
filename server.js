@@ -128,15 +128,13 @@ io.on('connection', (socket) => {
       images_file: imageFile
     };
 
-    socket.emit('fileValidation', result);
-
     visualRecognition.detectFaces(params, function(err, response) {
       if (err) { 
         console.log(err);
       } else {
         result.result = response.images[0].faces.length != 0;
         result.feedback = response;
-        console.log("Result of picture validation '"+ socket.file.pathName + "': " + result + "\n" + JSON.stringify(response, null, 2))
+        console.log("Result of picture validation '"+ socket.file.pathName + "': " + result.result + "\n" + JSON.stringify(response, null, 2))
         socket.emit('fileValidation', result);
         socket.file.filevalidation = result;
       }
