@@ -165,7 +165,7 @@ io.on('connection', (socket) => {
     socket.userroom = chat;
     socket.broadcast.to(chat).emit('message', createMessage(1, socket.nickname)); //send msg to e1 in same chat
     io.emit('list', getAllUsersAsString());
-
+    io.emit('userpic', {type: 0, user: socket.nickname, file: null});
     console.log(socket.nickname + ' joined room: ' + chat);
   })
 
@@ -281,7 +281,7 @@ function createMessage(type, user, message) {
   switch (type) {
     case 1:
     case 2:
-      result.message = user + " has " + type==1?"joined!":"left!";
+      result.message = user + " has " + (type!=1?"joined!":"left!");
       break;
     case 3:
       result.message = message;
