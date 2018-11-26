@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Message } from '../classes/message';
+import { User }from '../classes/user'
 
 @Component({
   selector: 'app-chat-display',
@@ -9,6 +10,7 @@ import { Message } from '../classes/message';
 export class ChatDisplayComponent implements OnInit {
 
   @Input() messages: Message[];
+  @Input() userlist: User[];
 
   constructor() {
   }

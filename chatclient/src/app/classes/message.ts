@@ -4,6 +4,7 @@ export class Message {
   msg: string;
   mood: string;
   code: number;
+  public img = null;
 
   constructor(user: string, timestamp: string, msg: string, code: number) {
     this.user = user;

@@ -34,13 +34,20 @@
     font-family: "Verdana", Times, serif;
     color: black;
     font-size: 18px;
-    clear: both;
+    float: left;
 }
 
 #markedMessage {
+    float: left;
     font-family: "Verdana", Times, serif;
     color: lightgrey;
     font-size: 18px;
-    clear: both;
     font-style: italic;
+}
+#img {
+    float: left;
+    margin-right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
 }

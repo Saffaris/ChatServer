@@ -3,6 +3,7 @@ import { ChatService } from '../chat.service';
 import { Router } from '@angular/router';
 import { Message } from '../classes/message';
 import { MoodService } from '../mood.service';
+import { User } from '../classes/user'
 
 @Component({
   selector: 'app-globalchat',
@@ -11,7 +12,8 @@ import { MoodService } from '../mood.service';
 })
 export class GlobalchatComponent implements OnInit {
   
-
+  
+  public userlist: User[] = [];
   public displayMessages: Message[] = [];
   
   username: string = localStorage.getItem('username');
@@ -34,6 +36,15 @@ export class GlobalchatComponent implements OnInit {
     this.chatservice.join(this.chat);
     this.chatservice.getMessages().subscribe((message) => {
       var m = new Message(message.user, message.timestamp, message.message, message.code);
+      var found = false;
+      var i = 0;
+      while(i < this.userlist.length && !found) {
+        if(this.userlist[i].name == message.user) {
+          m.img = this.userlist[i].image;
+          found = true;
+        }
+        i++;
+      }
       this.displayMessages.push(m);
     });
   }

@@ -260,7 +260,7 @@ var AppModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "#msg{\r\n    list-style-type: none;\r\n}\r\n\r\n#msg li {\r\n    border-bottom: solid;\r\n    border-bottom-width: 1px;\r\n    border-bottom-color: lightgrey;\r\n    margin-left: 5px;\r\n    margin-right: 5px;\r\n    padding-bottom: 5px;\r\n    padding-top: 5px;\r\n}\r\n\r\n#head{\r\n    font-size: 12px;\r\n    color: grey;\r\n}\r\n\r\n#timestamp{\r\n    margin-right: 5px;\r\n    float: left;\r\n}\r\n\r\n#name {\r\n    float: left;\r\n}\r\n\r\n#mood {\r\n    float:right;\r\n}\r\n\r\n#message {\r\n    font-family: \"Verdana\", Times, serif;\r\n    color: black;\r\n    font-size: 18px;\r\n    clear: both;\r\n}\r\n\r\n#markedMessage {\r\n    font-family: \"Verdana\", Times, serif;\r\n    color: lightgrey;\r\n    font-size: 18px;\r\n    clear: both;\r\n    font-style: italic;\r\n}"
+module.exports = "#msg{\r\n    list-style-type: none;\r\n}\r\n\r\n#msg li {\r\n    border-bottom: solid;\r\n    border-bottom-width: 1px;\r\n    border-bottom-color: lightgrey;\r\n    margin-left: 5px;\r\n    margin-right: 5px;\r\n    padding-bottom: 5px;\r\n    padding-top: 5px;\r\n}\r\n\r\n#head{\r\n    font-size: 12px;\r\n    color: grey;\r\n}\r\n\r\n#timestamp{\r\n    margin-right: 5px;\r\n    float: left;\r\n}\r\n\r\n#name {\r\n    float: left;\r\n}\r\n\r\n#mood {\r\n    float:right;\r\n}\r\n\r\n#message {\r\n    font-family: \"Verdana\", Times, serif;\r\n    color: black;\r\n    font-size: 18px;\r\n    float: left;\r\n}\r\n\r\n#markedMessage {\r\n    float: left;\r\n    font-family: \"Verdana\", Times, serif;\r\n    color: lightgrey;\r\n    font-size: 18px;\r\n    font-style: italic;\r\n}\r\n\r\n#img {\r\n    float: left;\r\n    margin-right: 10px;\r\n    width: 30px;\r\n    height: 30px;\r\n    border-radius: 5px;\r\n}"
 
 /***/ }),
 
@@ -271,7 +271,7 @@ module.exports = "#msg{\r\n    list-style-type: none;\r\n}\r\n\r\n#msg li {\r\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"messageContainer\">\n  <ul id=\"msg\">\n    <li *ngFor=\"let msg of messages\">\n      <div id=\"head\">\n        <div id=\"timestamp\"><strong>{{msg.timestamp}}</strong></div>\n        <div id=\"name\"><strong>{{msg.user}}</strong></div>\n        <div id=\"mood\">{{msg.mood}}</div>\n      </div>\n      <div *ngIf=\"msg.code == 3\" id=\"message\">{{msg.msg}}</div>\n      <div *ngIf=\"msg.code != 3\" id=\"markedMessage\">{{msg.msg}}</div>\n    </li>\n  </ul>\n</div>\n"
+module.exports = "<div id=\"messageContainer\">\n  <ul id=\"msg\">\n    <li *ngFor=\"let msg of messages\">\n      <div id=\"head\">\n        <div id=\"timestamp\"><strong>{{msg.timestamp}}</strong></div>\n        <div id=\"name\"><strong>{{msg.user}}</strong></div>\n        <div id=\"mood\">{{msg.mood}}</div>\n      </div>\n      <div style=\"clear: both\"></div>\n      <div *ngIf=\"msg.img == null && msg.code == 3\">\n        <img id=\"img\" src=\"assets/image/default-user.png\">\n      </div>\n      <div *ngIf=\"msg.img != null && msg.code == 3\">\n        <img id=\"img\" [src]=\"'data:image/jpg;base64,'+msg.img\" />\n      </div>\n      <div *ngIf=\"msg.code == 3\" id=\"message\">{{msg.msg}}</div>\n      <div *ngIf=\"msg.code != 3\" id=\"markedMessage\">{{msg.msg}}</div>\n      <div style=\"clear: both\"></div>\n    </li>\n  </ul>\n</div>\n"
 
 /***/ }),
 
@@ -305,6 +305,10 @@ var ChatDisplayComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", Array)
     ], ChatDisplayComponent.prototype, "messages", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Array)
+    ], ChatDisplayComponent.prototype, "userlist", void 0);
     ChatDisplayComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-chat-display',
@@ -408,6 +412,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 /* harmony import */ var _test_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./test.service */ "./src/app/test.service.ts");
+/* harmony import */ var _classes_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./classes/user */ "./src/app/classes/user.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -420,9 +425,11 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var ChatService = /** @class */ (function () {
     function ChatService(ts) {
         this.ts = ts;
+        this.userlist = [];
         this.socket = this.ts.getSocket();
     }
     /**
@@ -469,11 +476,16 @@ var ChatService = /** @class */ (function () {
         var _this = this;
         return rxjs__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(function (observer) {
             _this.socket.on('message', function (message) {
+                if (message.code == 1) {
+                    _this.userlist.push(new _classes_user__WEBPACK_IMPORTED_MODULE_3__["User"](message.username, null));
+                }
+                else if (message.code == 2) {
+                }
                 observer.next(message);
             });
         });
     };
-    ChatService.prototype.getListForComponent = function () {
+    ChatService.prototype.getAllUsers = function () {
         var _this = this;
         return rxjs__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(function (observer) {
             _this.socket.on('list', function (list) {
@@ -481,11 +493,18 @@ var ChatService = /** @class */ (function () {
             });
         });
     };
+    ChatService.prototype.getUserPic = function (user) {
+        this.socket.emit('getuserpic', user);
+    };
     ChatService.prototype.getUserPics = function () {
         var _this = this;
         return rxjs__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(function (observer) {
             _this.socket.on('userpic', function (info) {
+                /*var img = new Image();
+                img.src = 'data:image/jpeg;base64,' + info.img;
+                info.img = img;*/
                 observer.next(info);
+                console.log(JSON.stringify(info.img));
             });
         });
     };
@@ -512,12 +531,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Message", function() { return Message; });
 var Message = /** @class */ (function () {
     function Message(user, timestamp, msg, code) {
+        this.img = null;
         this.user = user;
         this.timestamp = timestamp;
         this.msg = msg;
         this.code = code;
     }
     return Message;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/classes/user.ts":
+/*!*********************************!*\
+  !*** ./src/app/classes/user.ts ***!
+  \*********************************/
+/*! exports provided: User */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "User", function() { return User; });
+var User = /** @class */ (function () {
+    function User(name, image) {
+        this.name = name;
+        this.image = image;
+    }
+    return User;
 }());
 
 
@@ -542,7 +584,7 @@ module.exports = ".clear {\r\n  clear: both;\r\n}\r\n\r\n#component {\r\n  heigh
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"component\">\n  <div id=\"info\">\n    <div id=\"title\">\n      <h1>HappyChat</h1>\n    </div>\n    <div title=\"Logout\" id=\"userinfo\" (click)=\"backToLogin()\">\n      <h2>{{username}}</h2><h3>Chat: {{chat}}</h3>\n    </div>\n  </div>\n  <div class=\"clear\"></div>\n\n  <div id=\"main\">\n\n    <div class=\"window\" id=\"chat\">\n      <div id=\"messages\">\n        <app-chat-display [messages]=\"displayMessages\"></app-chat-display>\n      </div>\n      <div id=\"chatform\">\n        <app-chat-form (sendEvent)=\"sendMessage($event)\"></app-chat-form>\n      </div>\n    </div>\n   \n    <app-userlist class=\"window\" id=\"list\"></app-userlist>\n\n  </div>\n</div>\n"
+module.exports = "[<div id=\"component\">\n  <div id=\"info\">\n    <div id=\"title\">\n      <h1>HappyChat</h1>\n    </div>\n    <div title=\"Logout\" id=\"userinfo\" (click)=\"backToLogin()\">\n      <h2>{{username}}</h2><h3>Chat: {{chat}}</h3>\n    </div>\n  </div>\n  <div class=\"clear\"></div>\n\n  <div id=\"main\">\n\n    <div class=\"window\" id=\"chat\">\n      <div id=\"messages\">\n        <app-chat-display [messages]=\"displayMessages\"></app-chat-display>\n      </div>\n      <div id=\"chatform\">\n        <app-chat-form (sendEvent)=\"sendMessage($event)\"></app-chat-form>\n      </div>\n    </div>\n   \n    <app-userlist (sendEvent)=\"userlist=$event\" class=\"window\" id=\"list\"></app-userlist>\n\n  </div>\n</div>"
 
 /***/ }),
 
@@ -577,6 +619,7 @@ var GlobalchatComponent = /** @class */ (function () {
     function GlobalchatComponent(router, chatservice) {
         this.router = router;
         this.chatservice = chatservice;
+        this.userlist = [];
         this.displayMessages = [];
         this.username = localStorage.getItem('username');
         //moodservice: MoodService;
@@ -594,6 +637,15 @@ var GlobalchatComponent = /** @class */ (function () {
         this.chatservice.join(this.chat);
         this.chatservice.getMessages().subscribe(function (message) {
             var m = new _classes_message__WEBPACK_IMPORTED_MODULE_3__["Message"](message.user, message.timestamp, message.message, message.code);
+            var found = false;
+            var i = 0;
+            while (i < _this.userlist.length && !found) {
+                if (_this.userlist[i].name == message.user) {
+                    m.img = _this.userlist[i].image;
+                    found = true;
+                }
+                i++;
+            }
             _this.displayMessages.push(m);
         });
     };
@@ -1227,7 +1279,7 @@ var TestService = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "#container {\r\n    padding: 10px;\r\n}\r\n\r\nh1{\r\n    border-bottom: solid;\r\n    border-width: 2px;\r\n    margin:0px;\r\n    padding-bottom: 10px;\r\n    font-size: 24px;\r\n}\r\n\r\n#list{\r\n    list-style-type: none;\r\n}\r\n\r\n#user{\r\n    cursor: pointer;\r\n    margin: 5px;\r\n    font-size: 18px;\r\n    font-family: Arial, Helvetica, sans-serif;\r\n    border-bottom: 1px solid grey;\r\n\r\n}"
+module.exports = "#container {\r\n    padding: 10px;\r\n}\r\n\r\nh1{\r\n    margin:0px;\r\n    padding-bottom: 10px;\r\n    font-size: 24px;\r\n}\r\n\r\n#img {\r\n    margin-right: 10px;\r\n    width: 40px;\r\n    height: 40px;\r\n    border-radius: 5px;\r\n}"
 
 /***/ }),
 
@@ -1238,7 +1290,7 @@ module.exports = "#container {\r\n    padding: 10px;\r\n}\r\n\r\nh1{\r\n    bord
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"container\">\n    <div id=\"header\">\n        <h1>Online Users: {{list.length}}</h1>\n    </div>\n    <div id = \"listcontainer\">\n        <ul id=\"list\">\n            <li *ngFor=\"let item of list\">\n                <div id=\"user\">{{item}}</div>\n            </li>\n        </ul>\n    </div>\n</div>"
+module.exports = "<div id=\"container\">\n    <div id=\"header\">\n        <h1>Online Users: {{list.length}}</h1>\n    </div>\n    <mat-divider></mat-divider>\n    <mat-nav-list>\n        <mat-list-item *ngFor=\"let item of list\">\n            <div *ngIf=\"item.image == null\">\n                <img id=\"img\" src=\"assets/image/default-user.png\">\n            </div>\n            <div *ngIf=\"item.image!=null\">\n                <img id=\"img\" [src]=\"'data:image/jpg;base64,'+item.image\" />\n            </div>\n            <div id=\"user\">{{item.name}}</div>\n        </mat-list-item>\n    </mat-nav-list> \n</div>"
 
 /***/ }),
 
@@ -1254,6 +1306,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UserlistComponent", function() { return UserlistComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _chat_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../chat.service */ "./src/app/chat.service.ts");
+/* harmony import */ var _classes_user__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../classes/user */ "./src/app/classes/user.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1265,28 +1318,48 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+
 var UserlistComponent = /** @class */ (function () {
     function UserlistComponent(service) {
         this.service = service;
+        this.sendEvent = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.list = [];
     }
     UserlistComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.service.getListForComponent().subscribe(function (list) {
-            _this.setListList(list);
+        this.service.getAllUsers().subscribe(function (users) {
+            _this.list = [];
+            var userslist = users.split(';');
+            userslist.pop();
+            userslist.forEach(function (element) {
+                _this.list.push(new _classes_user__WEBPACK_IMPORTED_MODULE_2__["User"](element, null));
+                _this.service.getUserPic(element);
+            });
+            _this.sendEvent.emit(_this.list);
+        });
+        this.service.getMessages().subscribe(function (message) {
+            if (message.code == 1) {
+                _this.list.push(new _classes_user__WEBPACK_IMPORTED_MODULE_2__["User"](message.username, null));
+                _this.service.getUserPic(message.username);
+            }
+            else if (message.code == 2) {
+                //todo remove
+            }
+            _this.sendEvent.emit(_this.list);
         });
         this.service.getUserPics().subscribe(function (info) {
             _this.list.forEach(function (element) {
-                if (element.name == info.user && info.file != null) {
-                    element.image = info.file;
+                if (element.name == info.user) {
+                    element.image = info.img;
+                    _this.sendEvent.emit(_this.list);
                 }
             });
         });
     };
-    UserlistComponent.prototype.setListList = function (list) {
-        this.list = list.split(";");
-        this.list.pop();
-    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
+        __metadata("design:type", Object)
+    ], UserlistComponent.prototype, "sendEvent", void 0);
     UserlistComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-userlist',

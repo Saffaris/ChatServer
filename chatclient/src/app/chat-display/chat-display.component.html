@@ -6,8 +6,16 @@
         <div id="name"><strong>{{msg.user}}</strong></div>
         <div id="mood">{{msg.mood}}</div>
       </div>
+      <div style="clear: both"></div>
+      <div *ngIf="msg.img == null && msg.code == 3">
+        <img id="img" src="assets/image/default-user.png">
+      </div>
+      <div *ngIf="msg.img != null && msg.code == 3">
+        <img id="img" [src]="'data:image/jpg;base64,'+msg.img" />
+      </div>
       <div *ngIf="msg.code == 3" id="message">{{msg.msg}}</div>
       <div *ngIf="msg.code != 3" id="markedMessage">{{msg.msg}}</div>
+      <div style="clear: both"></div>
     </li>
   </ul>
 </div>

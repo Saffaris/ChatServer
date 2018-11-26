@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable} from 'rxjs';
 import { TestService } from './test.service'
+import { User } from './classes/user';
 
 @Injectable()
 export class ChatService {
- // private url = 'http://localhost:3000';
 
   private socket;
+  private userlist = [];
+  private delivery;
 
   constructor(private ts: TestService) {
     this.socket = this.ts.getSocket();
@@ -62,12 +64,17 @@ export class ChatService {
   public getMessages() {
     return Observable.create((observer) => {
       this.socket.on('message', (message) => {
+        if(message.code == 1) {
+          this.userlist.push(new User(message.username, null));
+        } else if(message.code == 2) {
+          
+        }
         observer.next(message);
       });
     });
   }
 
-  public getListForComponent() {
+  public getAllUsers() {
     return Observable.create((observer) => {
       this.socket.on('list', (list) => {
         observer.next(list);
@@ -75,10 +82,18 @@ export class ChatService {
     });
   }
 
+  public getUserPic(user) {
+    this.socket.emit('getuserpic', user);
+  }
+
   public getUserPics() {
     return Observable.create((observer) => {
       this.socket.on('userpic', (info) => {
+        /*var img = new Image();
+        img.src = 'data:image/jpeg;base64,' + info.img;
+        info.img = img;*/
         observer.next(info);
+        console.log(JSON.stringify(info.img))
       });
     });
   }

@@ -18,7 +18,7 @@ const socketIO = require('socket.io');
 const io = socketIO(server);
 const port = process.env.PORT || 3000;
 const moment = require('moment');
-var path = require('path');
+const fs = require('fs');
 var fu = require('socketio-file-upload');
 
 app.use(fu.router);
@@ -33,7 +33,6 @@ app.get('*', function(req, res) {
 //  validchatsession: boolean
 io.on('connection', (socket) => {
 
-  console.log(socket.id);
   socket.validchatsession = false; //needs login
   var uploader = new fu();
   uploader.dir = "./tempfile/";
@@ -161,9 +160,27 @@ io.on('connection', (socket) => {
   socket.on('join', function(chat) {
     socket.join(chat);
     socket.userroom = chat;
-    socket.broadcast.to(chat).emit('message', createMessage(1, socket.nickname)); //send msg to e1 in same chat
-    io.emit('list', getAllUsersAsString());
+    io.in(chat).emit('message', createMessage(1, socket.nickname)); //send msg to e1 in same chat
+    socket.emit('list', getAllUsersAsString());
     console.log(socket.nickname + ' joined room: ' + chat);
+  })
+
+  socket.on('getuserpic', function(user) {
+    var file = null;
+    for(var i = 0; i < databaseDummy.length; i++) {
+      console.log(user + " " + databaseDummy[i].user)
+      if(user == databaseDummy[i].user) {
+        file = databaseDummy[i].file;
+      }
+    }
+    if(file == null) {
+      socket.emit('userpic', {user: user, img: null})
+    } else {
+      fs.readFile(file.pathName, function(err, buf){
+        if (err) throw err
+        socket.emit('userpic', { user: user, img: buf.toString('base64') });
+      });
+    }
   })
 
   /**
@@ -278,7 +295,8 @@ function createMessage(type, user, message) {
   switch (type) {
     case 1:
     case 2:
-      result.message = user + " has " + (type!=1?"joined!":"left!");
+      result.message = user + " has " + (type==1?"joined!":"left!");
+      result.username = user;
       break;
     case 3:
       result.message = message;

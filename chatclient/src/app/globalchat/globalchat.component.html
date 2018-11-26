@@ -1,4 +1,4 @@
-<div id="component">
+[<div id="component">
   <div id="info">
     <div id="title">
       <h1>HappyChat</h1>
@@ -20,7 +20,7 @@
       </div>
     </div>
    
-    <app-userlist class="window" id="list"></app-userlist>
+    <app-userlist (sendEvent)="userlist=$event" class="window" id="list"></app-userlist>
 
   </div>
 </div>
