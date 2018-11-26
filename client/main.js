@@ -481,6 +481,14 @@ var ChatService = /** @class */ (function () {
             });
         });
     };
+    ChatService.prototype.getUserPics = function () {
+        var _this = this;
+        return rxjs__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(function (observer) {
+            _this.socket.on('userpic', function (info) {
+                observer.next(info);
+            });
+        });
+    };
     ChatService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])(),
         __metadata("design:paramtypes", [_test_service__WEBPACK_IMPORTED_MODULE_2__["TestService"]])
@@ -503,10 +511,11 @@ var ChatService = /** @class */ (function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Message", function() { return Message; });
 var Message = /** @class */ (function () {
-    function Message(user, timestamp, msg) {
+    function Message(user, timestamp, msg, code) {
         this.user = user;
         this.timestamp = timestamp;
         this.msg = msg;
+        this.code = code;
     }
     return Message;
 }());
@@ -533,7 +542,7 @@ module.exports = ".clear {\r\n  clear: both;\r\n}\r\n\r\n#component {\r\n  heigh
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"component\">\n  <div id=\"info\">\n    <div id=\"title\">\n      <h1>HappyChat</h1>\n    </div>\n    <div title=\"Logout\" id=\"userinfo\" (click)=\"backToLogin()\">\n      <h2>{{username}}</h2><h3>Chat: {{chat}}</h3>\n    </div>\n  </div>\n  <div class=\"clear\"></div>\n\n  <div id=\"main\">\n\n    <app-roomselect class=\"window\" id=\"room\"></app-roomselect>\n\n    <div class=\"window\" id=\"chat\">\n      <div id=\"messages\">\n        <app-chat-display [messages]=\"displayMessages\"></app-chat-display>\n      </div>\n      <div id=\"chatform\">\n        <app-chat-form (sendEvent)=\"sendMessage($event)\"></app-chat-form>\n      </div>\n    </div>\n   \n    <app-userlist class=\"window\" id=\"list\"></app-userlist>\n\n  </div>\n</div>\n"
+module.exports = "<div id=\"component\">\n  <div id=\"info\">\n    <div id=\"title\">\n      <h1>HappyChat</h1>\n    </div>\n    <div title=\"Logout\" id=\"userinfo\" (click)=\"backToLogin()\">\n      <h2>{{username}}</h2><h3>Chat: {{chat}}</h3>\n    </div>\n  </div>\n  <div class=\"clear\"></div>\n\n  <div id=\"main\">\n\n    <div class=\"window\" id=\"chat\">\n      <div id=\"messages\">\n        <app-chat-display [messages]=\"displayMessages\"></app-chat-display>\n      </div>\n      <div id=\"chatform\">\n        <app-chat-form (sendEvent)=\"sendMessage($event)\"></app-chat-form>\n      </div>\n    </div>\n   \n    <app-userlist class=\"window\" id=\"list\"></app-userlist>\n\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -584,8 +593,7 @@ var GlobalchatComponent = /** @class */ (function () {
         }
         this.chatservice.join(this.chat);
         this.chatservice.getMessages().subscribe(function (message) {
-            console.log(message.msg);
-            var m = new _classes_message__WEBPACK_IMPORTED_MODULE_3__["Message"](message.user, message.timestamp, message.message);
+            var m = new _classes_message__WEBPACK_IMPORTED_MODULE_3__["Message"](message.user, message.timestamp, message.message, message.code);
             _this.displayMessages.push(m);
         });
     };
@@ -1266,6 +1274,13 @@ var UserlistComponent = /** @class */ (function () {
         var _this = this;
         this.service.getListForComponent().subscribe(function (list) {
             _this.setListList(list);
+        });
+        this.service.getUserPics().subscribe(function (info) {
+            _this.list.forEach(function (element) {
+                if (element.name == info.user && info.file != null) {
+                    element.image = info.file;
+                }
+            });
         });
     };
     UserlistComponent.prototype.setListList = function (list) {

@@ -33,8 +33,7 @@ export class GlobalchatComponent implements OnInit {
     }
     this.chatservice.join(this.chat);
     this.chatservice.getMessages().subscribe((message) => {
-      console.log(message.msg)
-      var m = new Message(message.user, message.timestamp, message.message);
+      var m = new Message(message.user, message.timestamp, message.message, message.code);
       this.displayMessages.push(m);
     });
   }

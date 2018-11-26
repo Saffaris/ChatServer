@@ -1,4 +1,4 @@
-var databaseDummy = [{user: "aaaa", pass: "a", mood: true}, {user: "bbbb", pass: "b", mood: false}];
+var databaseDummy = [{user: "aaaa", pass: "a", mood: true, file: null}, {user: "bbbb", pass: "b", mood: false, file:null}];
 
 const VisualRecognitionV3 = require('watson-developer-cloud/visual-recognition/v3');
 const ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3');
@@ -165,7 +165,6 @@ io.on('connection', (socket) => {
     socket.userroom = chat;
     socket.broadcast.to(chat).emit('message', createMessage(1, socket.nickname)); //send msg to e1 in same chat
     io.emit('list', getAllUsersAsString());
-    io.emit('userpic', {type: 0, user: socket.nickname, file: null});
     console.log(socket.nickname + ' joined room: ' + chat);
   })
 

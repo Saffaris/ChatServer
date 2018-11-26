@@ -1,3 +1,8 @@
 export class User {
-  constructor(public name:string) {}
+
+  public image = null;
+
+  constructor(public name:string, image) {
+    this.image = image;
+  }
 }

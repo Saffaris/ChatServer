@@ -74,4 +74,12 @@ export class ChatService {
       });
     });
   }
+
+  public getUserPics() {
+    return Observable.create((observer) => {
+      this.socket.on('userpic', (info) => {
+        observer.next(info);
+      });
+    });
+  }
 }
