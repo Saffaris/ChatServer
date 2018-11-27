@@ -12,6 +12,7 @@
   margin-top: 20px;
   margin-left: 20px;
   margin-right: 10px;
+  height: 10%;
 }
 
 #title {
@@ -103,12 +104,12 @@ form input{
 
 
 #chatform{
-  height: 10%;
+  height: 5%;
   width: 100%;
 }
 
 #messages{
-  height: 90%;
+  height: 93%;
   overflow: auto;
   /*align-items: flex-start;*/
   display: flex;
@@ -117,9 +118,6 @@ form input{
 }
 
 .window{
-  border: 1px solid grey;
-  border-radius: 5px;
-  margin: 4px;
   height: 100%;
   float:left;
 }
@@ -127,7 +125,7 @@ form input{
 #main {
   box-sizing: border-box;
   width: 100%;
-  height: 80%;
+  height: 89%;
 }
 
 #room{
@@ -136,13 +134,18 @@ form input{
 }
 
 #chat{
-  width: 70%;
+  border-left: 1px solid lightgrey;
+  border-top: 1px solid lightgrey;
+  width: 80%;
   float: left;
+  margin-left: 0px;
 }
 
 
 #list{
-  width: 14%;
+  margin: 0px;
+  border-top: 1px solid lightgrey;
+  width: 18%;
   float: left;
 }
 
