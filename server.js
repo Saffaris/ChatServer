@@ -59,277 +59,306 @@ app.get('*', function (req, res) {
 });
 
 
-/*
-MongoClient.connect(MONGODB_URL, mongoOptions, function(err, db) {
-  if(!err) {
+
+MongoClient.connect(MONGODB_URL, mongoOptions, function (err, db) {
+  if (!err) {
     console.log("Databasee connected");
+    var dbo = db.db("mydb");
+    updateUsers();
   } else {
     throw err;
   }
-});*/
 
-//socket data
-//  validchatsession: boolean
-io.on('connection', (socket) => {
+  var users;
 
-  socket.validchatsession = false; //needs login
-  var uploader = new fu();
-  uploader.dir = "./tempfile/";
-  uploader.listen(socket);
+  //socket data
+  //  validchatsession: boolean
+  io.on('connection', (socket) => {
 
-  uploader.on("saved", function (event) {
-    console.log("Saved file: " + event.file.pathName);
-    if(socket.file) {
-      fs.unlinkSync(socket.file.pathName)
-    }
-    socket.file = event.file;
-  })
+    socket.validchatsession = false; //needs login
+    var uploader = new fu();
+    uploader.dir = "./tempfile/";
+    uploader.listen(socket);
 
-  /**
-   * Triggered on login-form submission
-   * signindata = {user: string, pass: string}
-   * result = {code: number, message: string}
-   * codes
-   * 0 = default (should not happen)
-   * 1 = logged in
-   * 2 = valid input but no matched user
-   * 3 = valid user only
-   * 4 = valid pass only
-   * 5 = invalid pass and user
-   * 6 = username taken and wrong pass
-   */
-  socket.on('signin', function (signindata) {
-    console.log("Signin request: " + JSON.stringify(signindata));
-
-    var result = { code: 0, message: "Default" };
-    var user = signindata.user;
-    var pass = signindata.pass;
-
-    var validation = validUserAndPass(user, pass);
-    if (validation.validpass && validation.validuser) {
-      
-      if(readDB(user, "user") == user) {
-        socket.validchatsession = readDB(user, "pass") == pass;
-        if (socket.validchatsession) {
-          result.code = 1;
-          result.message += ", logged in";
-          socket.nickname = user;
-        } else {
-          result.code = 6; 
-          result.message = "Username taken"
-        }
-      } else {
-        result.code = 2;
-        result.message = "Valid Input";
+    uploader.on("saved", function (event) {
+      console.log("Saved file: " + event.file.pathName);
+      if (socket.file) {
+        fs.unlinkSync(socket.file.pathName)
       }
-    } else if (!validation.validpass && !validation.validuser) {
-      result.code = 5;
-      result.message = "Invalid User And Pass";
-    } else if (validation.validuser) {
-      result.code = 3;
-      result.message = "Invalid Password";
-    } else if (validation.validpass) {
-      result.code = 4;
-      result.message = "Invalid User";
-    }
-    socket.emit('signinresult', result);
+      socket.file = event.file;
+    })
 
-    console.log("Signin response: " + JSON.stringify(result)
-      + ", for input: " + JSON.stringify(signindata) + "\n");
-  })
+    /**
+     * Triggered on login-form submission
+     * signindata = {user: string, pass: string}
+     * result = {code: number, message: string}
+     * codes
+     * 0 = default (should not happen)
+     * 1 = logged in
+     * 2 = valid input but no matched user
+     * 3 = valid user only
+     * 4 = valid pass only
+     * 5 = invalid pass and user
+     * 6 = username taken and wrong pass
+     */
+    socket.on('signin', function (signindata) {
+      console.log("Signin request: " + JSON.stringify(signindata));
 
-  /**
-   * Triggered on signin-form submission
-   * signupdata = {user: string, pass: string, mood:bool}
-   * codes
-   * 0 = fail
-   * 1 = success
-   * @returns {code: number, user:string}
-   */
-  socket.on('signup', function (signupdata) {
-    console.log("Signup request: " + JSON.stringify(signupdata));
-    var valid = validUserAndPass(signupdata.user, signupdata.pass);
-    var response = { code: 0, user: signupdata.user }
-    if (valid.validpass && valid.validuser) {
-      try {
-        base64(socket.file.pathName)
-          .then(
-            (response) => {
-              signupdata.file = response;
-              writeDB(signupdata);
-            }
-          )
-          .catch(
-            (error) => {
-              console.log(error);
-              signupdata.file = null;
-              writeDB(signupdata);
-            }
-          )
-      } catch (e) {
-        console.log(e)
-        signupdata.file = null;
-        writeDB(signupdata);
-      }
-      response.code = 1;
-    }
-    socket.emit('signupresult', response);
-    if(socket.file) {
-      fs.unlinkSync(socket.file.pathName);
-    }
-  })
+      var result = { code: 0, message: "Default" };
+      var user = signindata.user;
+      var pass = signindata.pass;
 
-  /**
-   * 
-   */
-  socket.on('fileValidationResult', function () {
-    result = { result: true }; //TODO false
-    //user file path 
-    //IBM blabla face blabla
+      var validation = validUserAndPass(user, pass);
+      if (validation.validpass && validation.validuser) {
 
-    var filePath = socket.file.pathName;
-    var imageFile = file.createReadStream(filePath);
-
-    var params = {
-      images_file: imageFile
-    };
-
-    visualRecognition.detectFaces(params, function (err, response) {
-      if (err) {
-        console.log(err);
-      } else {
-        result.result = response.images[0].faces.length != 0;
-        result.feedback = response;
-        console.log("Result of picture validation '" + socket.file.pathName + "': " + result.result + "\n" + JSON.stringify(response, null, 2))
-        socket.emit('fileValidation', result);
-        socket.file.filevalidation = result;
-      }
-    });
-  })
-
-  /**
-   * emits message to all connected socket that you left
-   */
-  socket.on('disconnect', function () {
-    
-    try {
-      fs.unlinkSync(socket.file.pathName)
-      console.log(socket.nickname + "Files Deleted")
-    } catch (error) {}
-  })
-
-  /**
-   * same as disconnect
-   */
-  socket.on('leave', function () {
-    socket.broadcast.emit('message', { timestamp: 'Server', user: 'Info', msg: socket.nickname + ' left!' })
-    io.emit('list', getAllUsersAsString());
-  })
-
-  /**
-   * joins user to chatroom, emits info message to all users in that chat
-   */
-  socket.on('join', function (chat) {
-    socket.join(chat);
-    socket.userroom = chat;
-    io.in(chat).emit('message', createMessage(1, socket.nickname)); //send msg to e1 in same chat
-    socket.emit('list', getAllUsersAsString());
-    console.log(socket.nickname + ' joined room: ' + chat);
-  })
-
-  socket.on('getuserpic', function (user) {
-    var file = readDB(user, "file");
-    socket.emit('userpic', { user: user, img: file })
-  })
-
-  /**
-   * emits message to all users in same chat room
-   */
-  socket.on('message', function (message) {
-    message = createMessage(3, socket.nickname, message)
-    /*if(message.split(' ')[0] == "\\whisper" && message.split(' ').length >= 3) {
-      list = findClientsSocket();
-      list.forEach(element => {
-        if(element.nickname == message.split(' ')[3]) {
-          s = ""
-          for (let index = 2; index < message.split(' ').length; index++) {
-            s += message.split(' ')[index];
+        if (readDB(user, "user") == user) {
+          socket.validchatsession = readDB(user, "pass") == pass;
+          if (socket.validchatsession) {
+            result.code = 1;
+            result.message += ", logged in";
+            socket.nickname = user;
+          } else {
+            result.code = 6;
+            result.message = "Username taken"
           }
-          socket.broadcast.to(element.id).emit('message', createMessage(3, socket.nickname, m));
+        } else {
+          result.code = 2;
+          result.message = "Valid Input";
         }
-      });
-    } else if(message.split[0] == "\\list") {
-      socket.emit('message', message = createMessage(3, "Server", getAllUsersAsString()))
-    } else {
-      
-    }*/
-    io.in(socket.userroom).emit('message', message);
-    console.log("Message sent in room: " + socket.userroom + ", Message: " + JSON.stringify(message))
-  })
+      } else if (!validation.validpass && !validation.validuser) {
+        result.code = 5;
+        result.message = "Invalid User And Pass";
+      } else if (validation.validuser) {
+        result.code = 3;
+        result.message = "Invalid Password";
+      } else if (validation.validpass) {
+        result.code = 4;
+        result.message = "Invalid User";
+      }
+      socket.emit('signinresult', result);
 
-  socket.on('whisper', function (info) {
-    console.log(socket.nickname + " whisper to " + info.user);
-    findClientsSocket().forEach(element => {
-      if (element.nickname == info.user) {
-        msg = { code: 2, timestamp: moment().format('hh:mm A'), user: socket.nickname + " whispers", msg: info.msg }
-        element.emit('message', msg);
-        socket.emit('message', msg);
-        return;
+      console.log("Signin response: " + JSON.stringify(result)
+        + ", for input: " + JSON.stringify(signindata) + "\n");
+    })
+
+    /**
+     * Triggered on signin-form submission
+     * signupdata = {user: string, pass: string, mood:bool}
+     * codes
+     * 0 = fail
+     * 1 = success
+     * @returns {code: number, user:string}
+     */
+    socket.on('signup', function (signupdata) {
+      console.log("Signup request: " + JSON.stringify(signupdata));
+      var valid = validUserAndPass(signupdata.user, signupdata.pass);
+      var response = { code: 0, user: signupdata.user }
+      if (valid.validpass && valid.validuser) {
+        try {
+          base64(socket.file.pathName)
+            .then(
+              (response) => {
+                signupdata.file = response;
+                writeDB(signupdata);
+              }
+            )
+            .catch(
+              (error) => {
+                console.log(error);
+                signupdata.file = null;
+                writeDB(signupdata);
+              }
+            )
+        } catch (e) {
+          console.log(e)
+          signupdata.file = null;
+          writeDB(signupdata);
+        }
+        response.code = 1;
+      }
+      socket.emit('signupresult', response);
+      if (socket.file) {
+        fs.unlinkSync(socket.file.pathName);
       }
     })
-  })
 
-  /**
-   * todo
-   */
-  socket.on('file', function () {
-    console.log("file");
-  })
+    /**
+     * 
+     */
+    socket.on('fileValidationResult', function () {
+      result = { result: true }; //TODO false
+      //user file path 
+      //IBM blabla face blabla
 
-  /**
-   * emits list of all connected users to requester
-   */
-  socket.on('listmsg', function () {
-    console.log(socket.nickname + ': list request');
-    var users = "";
-    findClientsSocket().forEach(element => {
-      users += element.nickname + " ";
+      var filePath = socket.file.pathName;
+      var imageFile = file.createReadStream(filePath);
+
+      var params = {
+        images_file: imageFile
+      };
+
+      visualRecognition.detectFaces(params, function (err, response) {
+        if (err) {
+          console.log(err);
+        } else {
+          result.result = response.images[0].faces.length != 0;
+          result.feedback = response;
+          console.log("Result of picture validation '" + socket.file.pathName + "': " + result.result + "\n" + JSON.stringify(response, null, 2))
+          socket.emit('fileValidation', result);
+          socket.file.filevalidation = result;
+        }
+      });
+    })
+
+    /**
+     * emits message to all connected socket that you left
+     */
+    socket.on('disconnect', function () {
+      if (socket.nickname != undefined) {
+        io.in("global").emit('message', createMessage(2, socket.nickname));
+        io.emit('list', getAllUsersAsString());
+      }
+
+      try {
+        fs.unlinkSync(socket.file.pathName)
+        console.log(socket.nickname + "Files Deleted")
+      } catch (error) { }
+    })
+
+    /**
+     * same as disconnect
+     */
+    socket.on('leave', function () {
+      socket.broadcast.emit('message', { timestamp: 'Server', user: 'Info', msg: socket.nickname + ' left!' })
+      io.emit('list', getAllUsersAsString());
+    })
+
+    /**
+     * joins user to chatroom, emits info message to all users in that chat
+     */
+    socket.on('join', function (chat) {
+      socket.join(chat);
+      socket.userroom = chat;
+      io.in(chat).emit('message', createMessage(1, socket.nickname)); //send msg to e1 in same chat
+      socket.emit('list', getAllUsersAsString());
+      console.log(socket.nickname + ' joined room: ' + chat);
+    })
+
+    socket.on('getuserpic', function (user) {
+      var file = readDB(user, "file");
+      socket.emit('userpic', { user: user, img: file })
+    })
+
+    /**
+     * emits message to all users in same chat room
+     */
+    socket.on('message', function (message) {
+      message1 = createMessage(3, socket.nickname, message)
+      asarr = message.split(" ");
+
+      if (asarr[0] == "\\whisper" && asarr.length > 2) {
+        findClientsSocket().forEach(element => {
+          if (element.nickname == asarr[1]) {
+            m = "";
+            for (let index = 2; index < asarr.length; index++) {
+              m += asarr[index] + " ";
+            }
+            socket.emit('message', createMessage(3, socket.nickname + " > " + element.nickname, m));
+            element.emit('message', createMessage(3, socket.nickname + " > " + element.nickname, m));
+          }
+        });
+      } else if (asarr[0] == "\\list") {
+        message1.message = getAllUsersAsString();
+        message1.code = 1;
+        message1.user = "Server List";
+        socket.emit('message', message1);
+      } else {
+        io.in(socket.userroom).emit('message', message1);
+      }
+      console.log("Message sent in room: " + socket.userroom + ", Message: " + JSON.stringify(message1))
+    })
+
+    socket.on('whisper', function (info) {
+      console.log(socket.nickname + " whisper to " + info.user);
+      findClientsSocket().forEach(element => {
+        if (element.nickname == info.user) {
+          msg = { code: 2, timestamp: moment().format('hh:mm A'), user: socket.nickname + " whispers", msg: info.msg }
+          element.emit('message', msg);
+          socket.emit('message', msg);
+          return;
+        }
+      })
+    })
+
+    /**
+     * todo
+     */
+    socket.on('file', function () {
+      console.log("file");
+    })
+
+    /**
+     * emits list of all connected users to requester
+     */
+    socket.on('listmsg', function () {
+      console.log(socket.nickname + ': list request');
+      var users = "";
+      findClientsSocket().forEach(element => {
+        users += element.nickname + " ";
+      });
+      socket.emit('message', { timestamp: 'Server', user: 'Online Users', msg: users });
+      console.log(users);
+    })
+
+  });
+
+
+
+  function updateUsers() {
+    dbo.collection("users").find({}).toArray(function (err, result) {
+      if (err) throw err;
+      users = result;
     });
-    socket.emit('message', { timestamp: 'Server', user: 'Online Users', msg: users });
-    console.log(users);
-  })
+  }
 
+  function writeDB(signupdata) {
+
+    dbo.collection("users").insertOne(signupdata, function (err, res) {
+      if (err) throw err;
+      console.log("user inserted");
+    });
+    //databaseDummy.push(signupdata);
+    console.log("Successfull sign up for: " + signupdata.user + " " + signupdata.pass + " " + signupdata.mood + " " + (uufile = signupdata.file == null ? null : signupdata.file.substring(0, 8) + "..."))
+    updateUsers();
+  }
+
+  function readDB(user, value) {
+
+    users.forEach(element => {
+      if (user == element.user) {
+        switch (value) {
+          case "user":
+            res = element.user;
+            break;
+          case "pass":
+            res = element.pass;
+            break;
+          case "mood":
+            res = element.mood;
+            break;
+          case "file":
+            res = element.file;
+            break;
+          default:
+        }
+      }
+    });
+    console.log("DB call: Key = " + user + "; Value = " + value + "; Result = " + res);
+    return res;
+
+  }
 });
 
-function writeDB(signupdata) {
-  databaseDummy.push(signupdata);
-  console.log("Successfull sign up for: " + signupdata.user + " " + signupdata.pass + " " + signupdata.mood + " " + (uufile = signupdata.file == null ? null : signupdata.file.substring(0, 8) + "..."))
-}
-
-function readDB(user, value) {
-  var res = 0;
-  databaseDummy.forEach(element => {
-    if(user == element.user) {
-      switch(value) {
-        case "user":
-          res = element.user;
-          break;
-        case "pass":
-          res = element.pass;
-          break;
-        case "mood":
-          res = element.mood;
-          break;
-        case "file":
-          res = element.file;
-          break;
-        default:
-      }
-    }
-  });
-  console.log("DB call: Key = " + user + "; Value = " + value + "; Result = " + res);
-  return res;
-}
 /**
  * returns all connected sockets
  * @param {} roomId (optional)
