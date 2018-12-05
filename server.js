@@ -1,5 +1,3 @@
-var databaseDummy = [{ user: "aaaa", pass: "a", mood: true, file: null }, { user: "bbbb", pass: "b", mood: false, file: null }];
-
 const VisualRecognitionV3 = require('watson-developer-cloud/visual-recognition/v3');
 const ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3');
 
@@ -16,7 +14,6 @@ const app = express();
 
 const fs = require('fs');
 const fu = require('socketio-file-upload');
-const assert = require('assert');
 const file = require('file-system');
 const bodyParser = require('body-parser');
 const socketIO = require('socket.io');
@@ -24,19 +21,15 @@ const http = require('http');
 const https = require('https');
 const moment = require('moment');
 const base64 = require('image-to-base64')
-var mongoose = require('mongoose')
 
 var options = {
   key: fs.readFileSync('encryption/server.key'),
   cert: fs.readFileSync('encryption/server.crt')
 };
 
-//const server = http.createServer(app);
 const server = https.Server(options, app);
 const io = socketIO(server);
 const port = process.env.PORT || 3000;
-
-
 
 var mongoOptions = {
 
@@ -55,10 +48,8 @@ app.use(express.static(__dirname));
 
 
 app.get('*', function (req, res) {
-  res.redirect(__dirname + '/client/index.html');
+  res.sendFile(__dirname + '/client/index.html');
 });
-
-
 
 MongoClient.connect(MONGODB_URL, mongoOptions, function (err, db) {
   if (!err) {
