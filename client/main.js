@@ -331,7 +331,7 @@ var ChatDisplayComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "#filebutton{\r\n    width: 7%;\r\n}\r\n\r\n#submit{\r\n    width: 7%;\r\n    margin-left: 2px;\r\n    margin-right: 2px;\r\n}\r\n\r\ninput{\r\n    width: 84%;\r\n    float: left;\r\n}\r\n\r\n#container{\r\n    width: 100%;\r\n    height: 100%;\r\n    margin-left: 4px;\r\n}\r\n\r\n#file{\r\n    width: 0.1px;\r\n\theight: 0.1px;\r\n\topacity: 0;\r\n\toverflow: hidden;\r\n\tposition: absolute;\r\n\tz-index: -1;\r\n}\r\n"
+module.exports = ".icon{\r\n    margin: 0px;\r\n    padding: 0px;\r\n}\r\n#filebutton{\r\n    margin-top: 0px;\r\n    width: 20px;\r\n    height: 100%;\r\n}\r\n#submit{\r\n    width: 40px;\r\n    height: 100%;\r\n    margin-top: 0px;\r\n    margin-left: 2px;\r\n    margin-right: 2px;\r\n}\r\ninput{\r\n    height: 100%;\r\n    width: 84%;\r\n    float: left;\r\n}\r\n#container{\r\n    width: 100%;\r\n    height: 100%;\r\n    margin-left: 4px;\r\n}\r\n#file{\r\n    width: 0.1px;\r\n\theight: 0.1px;\r\n\topacity: 0;\r\n\toverflow: hidden;\r\n\tposition: absolute;\r\n\tz-index: -1;\r\n}\r\n"
 
 /***/ }),
 
@@ -342,7 +342,7 @@ module.exports = "#filebutton{\r\n    width: 7%;\r\n}\r\n\r\n#submit{\r\n    wid
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"container\">\n  <form (ngSubmit)=\"onSubmit()\" #chatForm=\"ngForm\">\n     <input [(ngModel)]=\"messageText\" class=\"form-control\" type=\"text\" id=\"input\" name=\"msg\" placeholder=\"Enter Message\" required>\n     <button type=\"submit\" id=\"submit\" class=\"btn btn-primary\">💬</button>\n     <label id=\"filebutton\" for=\"file\" class=\"btn btn-primary\">📁</label>\n     <input type=\"file\" name=\"file\" id=\"file\" (change)=\"onChange($event)\"/>\n  </form>\n</div>"
+module.exports = "<div id=\"container\">\n  <form (ngSubmit)=\"onSubmit()\" #chatForm=\"ngForm\">\n    <input [(ngModel)]=\"messageText\" class=\"form-control\" type=\"text\" id=\"input\" name=\"msg\" placeholder=\"Enter Message\"\n      required>\n    <button mat-stroked-button type=\"submit\" id=\"submit\">\n      <mat-icon class=\"icon\">send</mat-icon>\n    </button>\n    <label id=\"filebutton\" for=\"file\">\n      <button mat-stroked-button style=\"pointer-events: none;\">\n        <mat-icon class=\"icon\" style=\"pointer-events: none;\">attach_file</mat-icon>\n      </button>\n    </label>\n    <input type=\"file\" name=\"file\" id=\"file\" (change)=\"onChange($event)\" />\n  </form>\n</div>"
 
 /***/ }),
 
@@ -375,8 +375,10 @@ var ChatFormComponent = /** @class */ (function () {
     ChatFormComponent.prototype.ngOnInit = function () {
     };
     ChatFormComponent.prototype.onSubmit = function () {
-        this.sendEvent.emit(this.messageText);
-        this.messageText = "";
+        if (this.messageText != "") {
+            this.sendEvent.emit(this.messageText);
+            this.messageText = "";
+        }
     };
     ChatFormComponent.prototype.onChange = function (event) {
     };
@@ -500,11 +502,7 @@ var ChatService = /** @class */ (function () {
         var _this = this;
         return rxjs__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(function (observer) {
             _this.socket.on('userpic', function (info) {
-                /*var img = new Image();
-                img.src = 'data:image/jpeg;base64,' + info.img;
-                info.img = img;*/
                 observer.next(info);
-                console.log(JSON.stringify(info.img));
             });
         });
     };
@@ -573,7 +571,7 @@ var User = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".clear {\r\n  clear: both;\r\n}\r\n\r\n#component {\r\n  height: 100%;\r\n}\r\n\r\n/* Header Styling */\r\n\r\n#info {\r\n  margin-top: 20px;\r\n  margin-left: 20px;\r\n  margin-right: 10px;\r\n  height: 10%;\r\n}\r\n\r\n#title {\r\n  float: left;\r\n}\r\n\r\n#userinfo {\r\n  color: grey;\r\n  border: solid;\r\n  border-width: 2px;\r\n  padding: 10px;\r\n  float: right;\r\n  border-radius: 5px;\r\n  margin-bottom: 15px;\r\n}\r\n\r\n#userinfo:hover {\r\n  background-color: lightblue;\r\n  cursor: pointer;\r\n}\r\n\r\nh1 {\r\n  margin: 0;\r\n}\r\n\r\nh2{\r\n  margin: 0;\r\n  font-size: 20px;\r\n  padding-right: 10px;\r\n  display: table-cell;\r\n}\r\n\r\nh3{\r\n  padding-left: 10px;\r\n  border-left: solid;\r\n  border-color: grey;\r\n  border-width: 2px;\r\n  margin: 0;\r\n  font-size: 19px;\r\n  display: table-cell;\r\n}\r\n\r\n/* Form Styling */\r\n\r\n#userInputContainer {\r\n  width: 100%;\r\n  margin-left: 10px;\r\n  margin-top: 10px;\r\n}\r\n\r\n#fileButton {\r\n  float:left;\r\n  width: 3.25%;\r\n  cursor: pointer;\r\n}\r\n\r\n#fileImage{\r\n  pointer-events: none;\r\n}\r\n\r\nh6{\r\n  float:left;\r\n  width: 5%;\r\n}\r\n\r\n#file {\r\n  width: 0.1px;\r\n\theight: 0.1px;\r\n\topacity: 0;\r\n\toverflow: hidden;\r\n\tposition: absolute;\r\n\tz-index: -1;\r\n}\r\n\r\nform {\r\n  float: left;\r\n  width: 100%;\r\n}\r\n\r\nform button {\r\n  float: left;\r\n  width: 10%;\r\n}\r\n\r\nform input{\r\n  float: left;\r\n  width: 80%;\r\n}\r\n\r\n#chatform{\r\n  height: 5%;\r\n  width: 100%;\r\n}\r\n\r\n#messages{\r\n  height: 93%;\r\n  overflow: auto;\r\n  /*align-items: flex-start;*/\r\n  display: flex;\r\n  flex-direction: column-reverse;\r\n  min-height: 0px;\r\n}\r\n\r\n.window{\r\n  height: 100%;\r\n  float:left;\r\n}\r\n\r\n#main {\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  height: 89%;\r\n}\r\n\r\n#room{\r\n  width: 14%;\r\n  float: left;\r\n}\r\n\r\n#chat{\r\n  border-left: 1px solid lightgrey;\r\n  border-top: 1px solid lightgrey;\r\n  width: 80%;\r\n  float: left;\r\n  margin-left: 0px;\r\n}\r\n\r\n#list{\r\n  margin: 0px;\r\n  border-top: 1px solid lightgrey;\r\n  width: 18%;\r\n  float: left;\r\n}\r\n\r\n/* width */\r\n\r\n::-webkit-scrollbar {\r\n  width: 15px;\r\n  \r\n}\r\n\r\n/* Track */\r\n\r\n::-webkit-scrollbar-track {\r\n  background: rgba(0,0,0,0);\r\n \r\n}\r\n\r\n/* Handle */\r\n\r\n::-webkit-scrollbar-thumb {\r\n  background: rgb(78, 156, 182, 0.2);\r\n  border-radius: 10px;\r\n}\r\n\r\n/* Handle on hover */\r\n\r\n::-webkit-scrollbar-thumb:hover {\r\n \r\n  border:solid;\r\n  border-width: 2px;\r\n  border-color: lightblue;\r\n} "
+module.exports = ".clear {\r\n  clear: both;\r\n}\r\n\r\n#component {\r\n  height: 100%;\r\n}\r\n\r\n/* Header Styling */\r\n\r\n#info {\r\n  margin-top: 20px;\r\n  margin-left: 20px;\r\n  margin-right: 10px;\r\n  height: 10%;\r\n}\r\n\r\n#title {\r\n  float: left;\r\n}\r\n\r\n#userinfo {\r\n  color: grey;\r\n  border: solid;\r\n  border-width: 2px;\r\n  padding: 10px;\r\n  float: right;\r\n  border-radius: 5px;\r\n  margin-bottom: 15px;\r\n}\r\n\r\n#userinfo:hover {\r\n  background-color: lightblue;\r\n  cursor: pointer;\r\n}\r\n\r\nh1 {\r\n  margin: 0;\r\n}\r\n\r\nh2{\r\n  margin: 0;\r\n  font-size: 20px;\r\n  padding-right: 10px;\r\n  display: table-cell;\r\n}\r\n\r\nh3{\r\n  padding-left: 10px;\r\n  border-left: solid;\r\n  border-color: grey;\r\n  border-width: 2px;\r\n  margin: 0;\r\n  font-size: 19px;\r\n  display: table-cell;\r\n}\r\n\r\n/* Form Styling */\r\n\r\n#userInputContainer {\r\n  width: 100%;\r\n  margin-left: 10px;\r\n  margin-top: 10px;\r\n}\r\n\r\n#fileButton {\r\n  float:left;\r\n  width: 3.25%;\r\n  cursor: pointer;\r\n}\r\n\r\n#fileImage{\r\n  pointer-events: none;\r\n}\r\n\r\nh6{\r\n  float:left;\r\n  width: 5%;\r\n}\r\n\r\n#file {\r\n  width: 0.1px;\r\n\theight: 0.1px;\r\n\topacity: 0;\r\n\toverflow: hidden;\r\n\tposition: absolute;\r\n\tz-index: -1;\r\n}\r\n\r\nform {\r\n  float: left;\r\n  width: 100%;\r\n}\r\n\r\nform button {\r\n  float: left;\r\n  width: 10%;\r\n}\r\n\r\nform input{\r\n  float: left;\r\n  width: 80%;\r\n}\r\n\r\n#chatform{\r\n  margin-top: 2px;\r\n  height: 5%;\r\n  width: 100%;\r\n}\r\n\r\n#messages{\r\n  height: 93%;\r\n  overflow: auto;\r\n  /*align-items: flex-start;*/\r\n  display: flex;\r\n  flex-direction: column-reverse;\r\n  min-height: 0px;\r\n}\r\n\r\n.window{\r\n  height: 100%;\r\n  float:left;\r\n}\r\n\r\n#main {\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  height: 89%;\r\n}\r\n\r\n#room{\r\n  width: 14%;\r\n  float: left;\r\n}\r\n\r\n#chat{\r\n  border-left: 1px solid lightgrey;\r\n  border-top: 1px solid lightgrey;\r\n  width: 80%;\r\n  float: left;\r\n  margin-left: 0px;\r\n}\r\n\r\n#list{\r\n  margin: 0px;\r\n  border-top: 1px solid lightgrey;\r\n  width: 18%;\r\n  float: left;\r\n}\r\n\r\n/* width */\r\n\r\n::-webkit-scrollbar {\r\n  width: 15px;\r\n  \r\n}\r\n\r\n/* Track */\r\n\r\n::-webkit-scrollbar-track {\r\n  background: rgba(0,0,0,0);\r\n \r\n}\r\n\r\n/* Handle */\r\n\r\n::-webkit-scrollbar-thumb {\r\n  background: rgb(78, 156, 182, 0.2);\r\n  border-radius: 10px;\r\n}\r\n\r\n/* Handle on hover */\r\n\r\n::-webkit-scrollbar-thumb:hover {\r\n \r\n  border:solid;\r\n  border-width: 2px;\r\n  border-color: lightblue;\r\n} "
 
 /***/ }),
 
@@ -651,23 +649,7 @@ var GlobalchatComponent = /** @class */ (function () {
     };
     GlobalchatComponent.prototype.sendMessage = function ($event) {
         var input = $event;
-        if (input == "\\list") {
-            this.chatservice.getList();
-        }
-        else if (input.split(' ')[0] == "\\whisper") {
-            var data = input.split(' ');
-            if (data.length >= 3) {
-                var user = data[1];
-                var msg = "";
-                for (var index = 2; index < data.length; index++) {
-                    msg += data[index] + " ";
-                }
-                this.chatservice.whisper(user, msg);
-            }
-        }
-        else {
-            this.chatservice.sendMessage(input);
-        }
+        this.chatservice.sendMessage(input);
     };
     /**
      * Handles file inputs TODO
@@ -697,7 +679,7 @@ var GlobalchatComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div ng *ngIf=\"!hide\">\r\n<div>\r\n    <h1 style=\"margin:0px;font-size: 26px\">Welcome {{data.name}}!</h1>\r\n    <h1 style=\"margin:5px;margin-left:0px;font-size: 24px\">We noticed you're new.</h1>\r\n</div>\r\n<mat-divider style=\"margin:10px;margin-left:0px\"></mat-divider>\r\n<div>\r\n\r\n    <label for=\"file\" style=\"cursor: pointer;\">\r\n        <button mat-raised-button style=\"pointer-events: none;\">Select Picture</button>\r\n    </label>\r\n    <mat-icon style=\"margin-left: 5px; float: right;\" *ngIf=\"validImage != undefined\" matSuffix>{{validImage ? 'done' : 'highlight_off'}}</mat-icon>\r\n    <input id=\"file\" type=\"file\" style=\"display: none\" (change)=\"onChange($event);\"/>\r\n    <div *ngIf=\"image\">\r\n        <img id=\"image\" [src]=\"image\" alt=\"---\" style=\"float:left; width: 150px;height: 150px; border: 1px solid lightgray\"/>\r\n        <div *ngIf=\"validImage\" style=\"float:left;margin-left: 5px;\">\r\n            <strong>{{gender}}</strong>\r\n            <br>\r\n            <strong>{{age}}</strong>\r\n        </div>\r\n    </div>\r\n\r\n    <mat-progress-bar mode=\"query\" style=\"margin-top: 10px;\" *ngIf=\"validateImage\" value={{uploadProgress}}></mat-progress-bar>\r\n</div>\r\n<div style=\"clear: both\"></div>\r\n<mat-divider style=\"margin:10px;margin-left:0px\"></mat-divider>\r\n<div>\r\n    <mat-slide-toggle [(ngModel)]=\"mood\">Show Mood</mat-slide-toggle>\r\n</div>\r\n\r\n<mat-divider style=\"margin:10px;margin-left:0px\"></mat-divider>\r\n<div mat-dialog-actions>\r\n    <button mat-button (click)=\"onNoClick()\">No Thanks</button>\r\n    <button mat-button (click)=\"onSubmit()\" cdkFocusInitial>Sign Up</button>\r\n</div>\r\n</div>\r\n<div *ngIf=\"hide\">\r\n    <mat-spinner></mat-spinner>\r\n</div>"
+module.exports = "<div ng *ngIf=\"!hide\">\r\n    <div>\r\n        <h1 style=\"margin:0px;font-size: 26px\">Welcome {{data.name}}!</h1>\r\n        <h1 style=\"margin:5px;margin-left:0px;font-size: 24px\">We noticed you're new.</h1>\r\n    </div>\r\n    <mat-divider style=\"margin:10px;margin-left:0px\"></mat-divider>\r\n    <div>\r\n\r\n        <label for=\"file\" style=\"cursor: pointer;\">\r\n            <button mat-raised-button style=\"pointer-events: none;\">Select Picture</button>\r\n        </label>\r\n        <mat-icon style=\"margin-left: 5px; float: right;\" *ngIf=\"validImage != undefined\" matSuffix>{{validImage ?\r\n            'done' : 'highlight_off'}}</mat-icon>\r\n        <input accept=\"image/x-png,image/jpeg\" id=\"file\" type=\"file\" style=\"display: none\" (change)=\"onChange($event);\" />\r\n        <div *ngIf=\"image\">\r\n            <img id=\"image\" [src]=\"image\" alt=\"---\" style=\"float:left; width: 150px;height: 150px; border: 1px solid lightgray\" />\r\n            <div *ngIf=\"validImage\" style=\"float:left;margin-left: 5px;\">\r\n                <strong>{{gender}}</strong>\r\n                <br>\r\n                <strong>{{age}}</strong>\r\n            </div>\r\n        </div>\r\n\r\n        <mat-progress-bar mode=\"query\" style=\"margin-top: 10px;\" *ngIf=\"validateImage\" value={{uploadProgress}}></mat-progress-bar>\r\n    </div>\r\n    <div style=\"clear: both\"></div>\r\n    <mat-divider style=\"margin:10px;margin-left:0px\"></mat-divider>\r\n    <div>\r\n        <mat-slide-toggle [(ngModel)]=\"mood\">Show Mood</mat-slide-toggle>\r\n    </div>\r\n\r\n    <mat-divider style=\"margin:10px;margin-left:0px\"></mat-divider>\r\n    \r\n    <div mat-dialog-actions>\r\n        <button mat-button (click)=\"onNoClick()\">No Thanks</button>\r\n        <button mat-button (click)=\"onSubmit()\" cdkFocusInitial>Sign Up</button>\r\n    </div>\r\n</div>\r\n<div *ngIf=\"hide\">\r\n    <mat-spinner></mat-spinner>\r\n</div>"
 
 /***/ }),
 
@@ -807,6 +789,9 @@ var LoginFormComponent = /** @class */ (function () {
                 this.userFeedback = "Invalid Username";
                 this.passFeedback = "Invalid Password";
                 break;
+            case 6:
+                this.userFeedback = "Username Taken";
+                break;
             default:
                 break;
         }
@@ -878,7 +863,7 @@ var Dialog = /** @class */ (function () {
         this.dialogRef.close();
     };
     Dialog.prototype.onSubmit = function () {
-        if (this.image && this.validImage) {
+        if ((this.image && this.validImage) || !this.image) {
             this.signup.register(this.data.name, this.data.pass, this.mood);
             this.hide = true;
         }

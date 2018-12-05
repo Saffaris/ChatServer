@@ -69,6 +69,9 @@ export class LoginFormComponent implements OnInit {
       this.userFeedback = "Invalid Username";
       this.passFeedback = "Invalid Password";
       break;
+    case 6:
+      this.userFeedback = "Username Taken";
+      break;
     default:
       break;
     }
@@ -143,7 +146,7 @@ export class Dialog implements OnInit{
   }
 
   onSubmit() {
-    if(this.image && this.validImage) {
+    if((this.image && this.validImage) || !this.image) {
       this.signup.register(this.data.name, this.data.pass, this.mood);
       this.hide = true;
     } else {

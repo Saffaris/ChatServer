@@ -104,6 +104,7 @@ form input{
 
 
 #chatform{
+  margin-top: 2px;
   height: 5%;
   width: 100%;
 }

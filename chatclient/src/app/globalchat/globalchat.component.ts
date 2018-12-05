@@ -51,21 +51,7 @@ export class GlobalchatComponent implements OnInit {
 
   sendMessage($event) {
     var input = $event;
-    if(input == "\\list"){
-      this.chatservice.getList();
-    } else if(input.split(' ')[0] == "\\whisper") {
-      var data = input.split(' ');
-      if(data.length >= 3) {
-        var user = data[1];
-        var msg = "";
-        for (let index = 2; index < data.length; index++) {
-          msg += data[index] + " "; 
-        }
-        this.chatservice.whisper(user, msg);
-      }
-    }else {
-      this.chatservice.sendMessage(input);
-    }
+    this.chatservice.sendMessage(input);
   }
  
 

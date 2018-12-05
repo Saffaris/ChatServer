@@ -89,11 +89,7 @@ export class ChatService {
   public getUserPics() {
     return Observable.create((observer) => {
       this.socket.on('userpic', (info) => {
-        /*var img = new Image();
-        img.src = 'data:image/jpeg;base64,' + info.img;
-        info.img = img;*/
         observer.next(info);
-        console.log(JSON.stringify(info.img))
       });
     });
   }
