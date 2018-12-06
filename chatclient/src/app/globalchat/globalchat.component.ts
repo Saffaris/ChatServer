@@ -39,7 +39,7 @@ export class GlobalchatComponent implements OnInit {
       var found = false;
       var i = 0;
       while(i < this.userlist.length && !found) {
-        if(this.userlist[i].name == message.user) {
+        if(this.userlist[i].name == message.user.split('>')[0]) {
           m.img = this.userlist[i].image;
           found = true;
         }
