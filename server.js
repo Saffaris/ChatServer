@@ -27,7 +27,8 @@ var options = {
   cert: fs.readFileSync('encryption/server.crt')
 };
 
-const server = https.Server(options, app);
+const server = http.Server(app);
+//const server = https.Server(options, app);
 const io = socketIO(server);
 const port = process.env.PORT || 3000;
 
