@@ -638,7 +638,7 @@ var GlobalchatComponent = /** @class */ (function () {
             var found = false;
             var i = 0;
             while (i < _this.userlist.length && !found) {
-                if (_this.userlist[i].name == message.user.split('>')[0]) {
+                if (_this.userlist[i].name == message.user.split(' > ')[0]) {
                     m.img = _this.userlist[i].image;
                     found = true;
                 }
